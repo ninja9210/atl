@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Login</title>
+    <style>
+      /* CSS for the login form container */
+      body {
+        background-color: rgb(255, 255, 255);
+        display: flex;
+        font-family: serif;
+        text-align: center;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+      }
+      form {
+        background-color: rgba(173,167,167,0.8); /* Semi-transparentwhite background */
+        width: 400px;
+        padding: 40px;
+        border-radius: 10px;
+        box-shadow: 0px 0px 40px rgba(0, 0, 0, 0.5);
+      }
+      input[type="text"],
+      input[type="password"] {
+        width: 100%;
+        padding: 10px;
+        margin: 5px 0;
+        border: 1px solid #ccc;
+      }
+      input[type="submit"] {
+        width: 100%;
+        padding: 10px;
+        margin-top: 10px;
+        background-color: #007bff; /* Blue button background color */
+        color: white; /* Text color */
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+      }
+    </style>
+  </head>
+  <body>
+    <form action="login.php" method="POST">
+      <h2>Login</h2>
+      Username or Email:
+      <input type="text" name="username_email" required /><br />
+      Password: <input type="password" name="password" required /><br />
+      <input type="submit" value="Login" />
+    </form>
+  </body>
+</html>
