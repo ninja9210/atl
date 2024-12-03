@@ -9,7 +9,7 @@ if ($conn->connect_error) {
 }
 $username = $_POST['username'];
 $email = $_POST['email'];
-$password = password_hash($_POST['password'], PASSWORD_DEFAULT);
+$password = $_POST['password'];
 $sql = "INSERT INTO users (username, email, password) VALUES ('$username',
 '$email', '$password')";
 if ($conn->query($sql) === TRUE) {

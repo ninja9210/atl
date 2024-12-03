@@ -20,7 +20,7 @@ $result = $conn->query($sql);
 if ($result->num_rows == 1) {
     $row = $result->fetch_assoc();
     // Verify the password
-    if (password_verify($password, $row['password'])) {
+    if ($password == $row['password']) {
         $_SESSION['username'] = $row['username'];
         echo "Login successful!";
         // Redirect to a protected page or dashboard
