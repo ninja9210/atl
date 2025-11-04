@@ -1,29 +1,74 @@
+# Load libraries
 library(shiny)
+library(dplyr)
+library(vroom)
 
-# Define UI
+# Read data
+sales <- vroom::vroom("saledata.csv", na = "")
+
+# UI definition
 ui <- fluidPage(
-  titlePanel("SquaresFind"),
-  
+  titlePanel("Dashboard for Sales Data"),
   sidebarLayout(
     sidebarPanel(
-      numericInput("number", "Enter a Number:", value = 1),
-      actionButton("submit", "Calculate Square")
+      selectInput("territories", "Territories", choices = unique(sales$territories)),
+      selectInput("Customers", "Customer", choices = sales$Customers)
     ),
-    
     mainPanel(
-      textOutput("result")
+      uiOutput("customer"),
+      tableOutput("data")
     )
   )
 )
 
-# Define Server
-server <- function(input, output) {
-  observeEvent(input$submit, {
-    output$result <- renderText({
-      paste("The square of", input$number, "is", input$number^2)
-    })
+# Server logic
+server <- function(input, output, session) {
+
+  territories <- reactive({
+    req(input$territories)
+    filter(sales, territories == input$territories)
+  })
+
+  customer <- reactive({
+    req(input$Customers)
+    filter(territories(), Customers == input$Customers)
+  })
+
+  output$customer <- renderUI({
+    row <- customer()[1, ]
+    tags$div(
+      class = "well",
+      tags$p(tags$strong("Name: "), row$fname, " ", row$lname),
+      tags$p(tags$strong("Phone: "), row$contact),
+      tags$p(tags$strong("Order: "), row$order)
+    )
+  })
+
+  order <- reactive({
+    req(input$order)
+    customer() %>%
+      filter(order == input$order) %>%
+      arrange(OLNUMBER) %>%
+      select(pline, qty, price, sales, status)
+  })
+
+  output$data <- renderTable(order())
+
+  observeEvent(territories(), {
+    updateSelectInput(
+      session, "Customers",
+      choices = unique(territories()$Customers),
+      selected = character()
+    )
+  })
+
+  observeEvent(customer(), {
+    updateSelectInput(
+      session, "order",
+      choices = unique(customer()$order)
+    )
   })
 }
 
-# Run the application
-shinyApp(ui = ui, server = server)
+# Run the Shiny app
+shinyApp(ui, server)
